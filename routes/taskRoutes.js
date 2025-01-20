@@ -12,11 +12,11 @@ router.post('/add', async (req, res) => {
   res.status(201).json({ message: 'Task created' });
 });
 
-module.exports = router; */
-
+*/
 
 const express = require('express');
 const router = express.Router();
+const { createTask, getTasks } = require("../controllers/userController");
 const Task = require('../models/Task');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -40,5 +40,22 @@ router.get('/', protect, async (req, res) => {
   const tasks = await Task.find({ user: req.user });
   res.json(tasks);
 });
+
+
+// Route pour créer une tâche
+router.post("/", protect, createTask);
+
+// Route pour obtenir les tâches de l'utilisateur connecté
+router.get("/", protect, getTasks);
+
+const { updateTask, deleteTask } = require('../controllers/taskController');
+
+// Mettre à jour une tâche
+router.put('/:id', protect, updateTask);
+
+// Supprimer une tâche
+router.delete('/:id', protect, deleteTask);
+
+
 
 module.exports = router;
